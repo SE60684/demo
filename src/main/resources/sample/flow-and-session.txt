@@ -1,0 +1,30 @@
+<flow name="MainFlow">
+	  <http:listener config-ref="HTTP_Listener_Configuration" path="/flow-and-session"  doc:name="HTTP"/>
+        <set-variable variableName="myFlowVar" value="#['myFlowVar']" doc:name="Variable"/>
+        <set-session-variable variableName="mySessionVar" value="#['mySessionVar']" doc:name="Session Variable"/>
+        <async processingStrategy="Asynchronous_Processing_Strategy" doc:name="Async">
+            <flow-ref name="AsynFlow" doc:name="AsynFlow"/>
+        </async>
+        <async doc:name="Async">
+            <vm:outbound-endpoint exchange-pattern="one-way" path="VMFlow" doc:name="VM"/>
+        </async>
+        <async doc:name="Async">
+            <http:request config-ref="HTTP_Request_Configuration" path="/callHttp" method="GET" doc:name="HTTP"/>
+        </async>
+        <flow-ref name="SubFlow" doc:name="SubFlow"/>
+        <set-payload value="#['!']" doc:name="Set Payload"/>
+  </flow>
+    <flow name="VMFlow">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="VMFlow" doc:name="VM"/>
+        <logger message="#['VMFlow:' + flowVars.myFlowVar +'/' + sessionVars.mySessionVar]" level="INFO" doc:name="Log FlowVars SessionVars"/>
+    </flow>
+    <flow name="AsynFlow">
+        <logger message="#['AsyncFlow:' + flowVars.myFlowVar +'/' + sessionVars.mySessionVar]" level="INFO" doc:name="Log FlowVars SessionVars"/>
+    </flow>
+    <sub-flow name="SubFlow">
+        <logger message="#['SubFlow:' + flowVars.myFlowVar +'/' + sessionVars.mySessionVar]" level="INFO" doc:name="Log FlowVars SessionVars"/>
+    </sub-flow>
+    <flow name="CallHttp">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/callHttp" doc:name="HTTP"/>
+        <logger message="#['CallHttp:' + flowVars.myFlowVar +'/' + sessionVars.mySessionVar]" level="INFO" doc:name="Log FlowVars SessionVars"/>
+    </flow>

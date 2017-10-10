@@ -1,0 +1,7 @@
+  <flow name="FilterDuplicateMessageFlow">
+	  <http:listener config-ref="HTTP_Listener_Configuration" path="/filter-duplicate-message-flow" allowedMethods="POST" doc:name="HTTP"/>
+	  <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+	  <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+	  <idempotent-message-filter idExpression="#[payload]" doc:name="Idempotent Message"/>
+	  <set-payload value="#[payload]" doc:name="Set Payload"/>
+  </flow>

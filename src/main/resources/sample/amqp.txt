@@ -1,0 +1,13 @@
+<!--
+  <amqp:connector name="AMQP_0_9_Connector" validateConnections="true" doc:name="AMQP-0-9 Connector"/>  	
+-->
+
+<flow name="SentFlow">
+  <http:listener config-ref="HTTP_Listener_Configuration" path="/ampq" allowedMethods="POST" doc:name="HTTP"/><logger level="INFO" doc:name="Logger"/>
+  <amqp:outbound-endpoint exchangeName="amq.topic" exchangeType="topic" exchangeDurable="true" responseTimeout="10000" exchange-pattern="request-response" connector-ref="AMQP_0_9_Connector" doc:name="AMQP-0-9"/>
+  <set-payload value="#['message sent']" doc:name="Set Payload"/>
+  </flow>
+  <flow name="ReceiveFlow">
+  <amqp:inbound-endpoint exchangeName="amq.topic" exchangeType="topic" exchangeDurable="true" responseTimeout="10000" exchange-pattern="request-response" doc:name="AMQP-0-9"/>
+  <logger level="INFO" doc:name="Logger"/>
+</flow>

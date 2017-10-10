@@ -1,0 +1,8 @@
+<flow name="GroovyKeepIntervalFlow">
+	  <http:listener config-ref="HTTP_Listener_Configuration" path="/groovy-keep-interval-flow" allowedMethods="POST" doc:name="HTTP"/>
+	  <logger message="#[new Date().toString() + ': message recieved']" level="INFO" doc:name="Logger"/>
+      <scripting:component doc:name="Groovy">
+            <scripting:script engine="Groovy"><![CDATA[sleep(3000); return message.payload;]]></scripting:script>
+      </scripting:component>
+      <logger message="#[new Date().toString() + ': message returned']" level="INFO" doc:name="Logger"/>
+</flow>
